@@ -1,0 +1,482 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'nav.html' %}
+
+<div id="page-content-wrapper">
+    <div id="content">
+        <div class="container-fluid p-0 px-lg-0 px-md-0">
+            <!-- Topbar -->
+            {% include 'topbar.html' %}
+            <!-- End of Topbar -->
+            <form id="filter-form" action="" method="POST">
+                {% csrf_token %}
+                <input type="text" id="tsearch" name="tsearch" value="{{search_data}}">
+                <input type="text" id="lStart" name="lStart" value="{{lStart}}">
+                <input type="text" id="lEnd" name="lEnd" value="{{lEnd}}">
+                <input type="text" id="fStart" name="fStart" value="{{fStart}}">
+                <input type="text" id="fEnd" name="fEnd" value="{{fEnd}}">
+                <input type="text" id="txt-flag" name="txt-flag" value="{{flag}}">
+                <input type="text" id="current_page" name="current_page" value="{{current_page}}">
+                <input type="text" id="current_limit" name="current_limit" value="{{current_limit}}">
+                <input type="text" id="columns_visibility" name="columns_visibility" value="{{columns_visibility}}">
+                <input type="text" id="swap_history" name="swap_history" value="{{swap_history}}">
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+
+            </form>
+            <!-- Begin Page Content -->
+            <div class="container-fluid px-lg-4">
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-md-12 mt-lg-4 mt-4 ">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- title -->
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <form id="form-search"
+                                            class="d-none d-sm-inline-block form-inline navbar-search" method="POST">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-light "
+                                                    placeholder="Search by HAWB" aria-label="Search" id="txt-search"
+                                                    name="search" value="{{search_data}}">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="submit">
+                                                        <i class="fas fa-search fa-sm"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <a href="{% url 'export' %}"
+                                            class="d-none d-sm-inline-block btn btn-md btn-primary shadow-sm ">
+                                            <i class="fas fa-upload mr-2"></i>IMPORT</a>
+                                        <a id="btn-export"
+                                            class="d-none d-sm-inline-block btn btn-md btn-primary shadow-sm ">
+                                            <i class="fas fa-download mr-2"></i>EXPORT</a>
+                                    </div>
+                                    <br />
+
+                                    <div class="ml-auto">
+                                        <div class="dl">
+                                            <select id="filter-select" class="custom-select">
+                                                {% if flag == "0" %}
+                                                <option value="0" selected>NO FILTER</option>
+                                                {% else %}
+                                                <option value="0">NO FILTER</option>
+                                                {% endif %}
+
+
+                                                {% if flag == "1" %}
+                                                <option value="1" selected>DUPLICATE</option>
+                                                {% else %}
+                                                <option value="1">DUPLICATE</option>
+                                                {% endif %}
+
+                                                {% if flag == "2" %}
+                                                <option value="2" selected>OVERDUE</option>
+                                                {% else %}
+                                                <option value="2">OVERDUE</option>
+                                                {% endif %}
+
+                                                {% if flag == "3" %}
+                                                <option value="3" selected>SUM</option>
+                                                {% else %}
+                                                <option value="3">SUM</option>
+                                                {% endif %}
+
+                                                {% if flag == "4" %}
+                                                <option value="4" selected>VERIFICATION</option>
+                                                {% else %}
+                                                <option value="4">VERIFICATION</option>
+                                                {% endif %}
+
+                                                {% if flag == "5" %}
+                                                <option value="5" selected>RELELASE</option>
+                                                {% else %}
+                                                <option value="5">RELELASE</option>
+                                                {% endif %}
+
+                                                {% if flag == "6" %}
+                                                <option value="6" selected>ALL CLEAR</option>
+                                                {% else %}
+                                                <option value="6">ALL CLEAR</option>
+                                                {% endif %}
+
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row no-gutters">
+                                    <div class="col">
+                                        <form action="" method="POST" id="filter-last-imported">
+                                            {% csrf_token %}
+                                            <h4 class="card-title mt-4">Filter by Last Imported</h4>
+                                            <label for="lStartDate">Start Date:</label>
+                                            <input type="date" id="lStartDate" name="lStartDate" value="{{lStart}}">
+                                            <label for="lEndDate">End Date:</label>
+                                            <input type="date" id="lEndDate" name="lEndDate" value="{{lEnd}}">
+                                            <br>
+                                            <input id="filter-last-imported"
+                                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                                                type="submit" value="FILTER">
+
+                                        </form>
+                                    </div>
+
+                                    <div class="col">
+                                        <form action="" method="POST" id="filter-first-imported">
+                                            {% csrf_token %}
+                                            <h4 class="card-title mt-4">Filter by First Imported</h4>
+                                            <label for="fStartDate">Start Date:</label>
+                                            <input type="date" id="fStartDate" name="fStartDate" value="{{fStart}}">
+                                            <label for="fEndDate">End Date:</label>
+                                            <input type="date" id="fEndDate" name="fEndDate" value="{{fEnd}}">
+                                            <br>
+                                            <input class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                                                type="submit" value="FILTER">
+
+                                        </form>
+                                    </div>
+                                    <div class="float-lg-right mt-2">
+                                        <div class="col">
+                                            <div class="button-group">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                                    data-toggle="dropdown">Columns Visibility<i class="fas
+                                                        fa-eye-slash ml-2"></i></span>
+                                                    <span class="caret"></span></button>
+                                                <ul class="dropdown-menu">
+                                                    {% for column in columns %}
+                                                    <li>
+                                                        <div class="small mx-2" id="ck_{{ forloop.counter0 }}"
+                                                            data-value="{{ forloop.counter0 }}" tabIndex="0"><input
+                                                                type="checkbox" checked /><span
+                                                                class="ml-2">{{column}}</span></div>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="ml-auto mt-2">
+                                            <div class="dl">
+                                                <select id="limit-select" class="custom-select">
+                                                    {% if current_limit == "50" %}
+                                                    <option value="50" selected>VIEW 50 RECORDS</option>
+                                                    {% else %}
+                                                    <option value="50">VIEW 50 RECORDS</option>
+                                                    {% endif %}
+
+
+                                                    {% if current_limit == "150" %}
+                                                    <option value="150" selected>VIEW 150 RECORDS</option>
+                                                    {% else %}
+                                                    <option value="150">VIEW 150 RECORDS</option>
+                                                    {% endif %}
+
+                                                    {% if current_limit == "250" %}
+                                                    <option value="250" selected>VIEW 250 RECORDS</option>
+                                                    {% else %}
+                                                    <option value="250">VIEW 250 RECORDS</option>
+                                                    {% endif %}
+
+                                                    {% if current_limit == "500" %}
+                                                    <option value="500" selected>VIEW 500 RECORDS</option>
+                                                    {% else %}
+                                                    <option value="500">VIEW 500 RECORDS</option>
+                                                    {% endif %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- title -->
+                            </div>
+                            <div class="demo">
+                                <table class="defaultTable sar-table" id="table-audit">
+                                    <thead>
+                                        <tr class="bg-light">
+
+                                            <th class="border-top-0">
+                                                HAWB<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(0,false)" />
+                                            </th>
+                                            <th class="border-top-0">D<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(1,false)" /></th>
+                                            <th class="border-top-0">O<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(2,false)" /></th>
+                                            <th class="border-top-0">S<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(3,false)" /></th>
+                                            <th class="border-top-0">V<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(4,false)" /></th>
+                                            <th class="border-top-0">R<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(5,false)" /></th>
+                                            <th class="border-top-0">C<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(6,false)" /></th>
+                                            <th class="border-top-0">LAST IMPORTED<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(7,false)" />
+                                            </th>
+                                            <th class="border-top-0">FIRST IMPORTED<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(8,false)" />
+                                            </th>
+                                            <th class="border-top-0">FS DEVAN<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(9,false)" />
+                                            </th>
+                                            <th class="border-top-0">OF LOCATION<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(10,false)" />
+                                            </th>
+                                            <th class="border-top-0">OF DEVAN<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(11,false)" />
+                                            </th>
+                                            <th class="border-top-0">OF PIECE COUNT<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(12,false)" />
+                                            </th>
+                                            <th class="border-top-0">PIECE COUNT<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(13,false)" />
+                                            </th>
+                                            <th class="border-top-0">FS LOCATION<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(14,false)" />
+                                            </th>
+                                            <th class="border-top-0">FS PIECE COUNT<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(15,false)" />
+                                            </th>
+                                            <th class="border-top-0">FS PRIMARY LOCATION<br><input type="checkbox"
+                                                    checked onclick="show_hide_column(16,false)" /></th>
+                                            <th class="border-top-0">CLIENT NAME<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(17,false)" />
+                                            </th>
+                                            <th class="border-top-0">RELEASE DATE<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(18,false)" />
+                                            </th>
+                                            <th class="border-top-0">CONSIGNEE<br><input type="checkbox" checked
+                                                    onclick="show_hide_column(19,false)" />
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in records %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <!-- <div class="">
+                                                        <h4 class="m-b-0 font-16">{{order.customerName}}</h4>
+                                                    </div> -->
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.hawb}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.duplicate_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.overdue_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.total_sum_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.verified_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.released_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.all_clear_flag}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.last_imported}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.first_imported}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.fs_devan}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.of_location}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.of_devan}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.of_piece_count}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.piece_count_difference}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.fs_location}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.fs_piece_count}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.fs_primary_location}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.client_name}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.release_date}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.consignee}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+
+                                        </tr>
+                                        {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    {% if page > 0%}
+                                    <li id="previous-page" class="page-item"><a class="page-link" href="#">Previous</a>
+                                    </li>
+                                    {% else %}
+                                    <li id="previous-page" class="page-item"><a class="page-link" href="#"
+                                            disabled>Previous</a></li>
+                                    {% endif %}
+                                    <li id="next-page" class="page-item"><a class="page-link" href="#">Next</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row text-muted">
+                    <div class="col-6 text-left">
+                        <p class="mb-0">
+                            <a href="index.html" class="text-muted"><strong>Inventory Management
+                                </strong></a> &copy
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+</div>
+
+{% endblock %}

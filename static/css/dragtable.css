@@ -1,0 +1,146 @@
+/* 
+ * dragtable
+ *
+ * @Version 2.0.15
+ *
+ * default css
+ *
+ */
+
+ /*##### the main stuff #####*/
+
+
+h1#akottr-header, #pageWrap {
+    width:1000px;
+    padding:15px 8px;
+    border-right: 1px solid #A6A7B0;
+    border-left: 1px solid #A6A7B0;
+}
+
+#pageWrap {
+    border-bottom: 1px solid #A6A7B0;
+}
+
+
+h1#akottr-header {
+    border-top: 1px solid #A6A7B0;
+    height: 70px;
+    margin: 0;
+    background-color: #EEEEEE;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+}
+
+h4 {
+ padding-bottom: 3px;
+}
+
+.intro {
+    padding: 8px 0;
+}
+
+.sample {
+    padding: 0 0 20px 0;
+}
+
+.sample .demo .demo-content {
+    padding: 3px 2px 3px 2px;
+    margin:5px 0;
+    border: 1px solid #1c4a9d;
+}
+
+.code-snippet pre {
+    padding: 3px 2px 3px 2px;
+    margin:5px 0;
+    background-color: #1c4a9d;
+    border: 1px solid #1c4a9d;
+}
+
+.sample .description {
+    padding: 5px 0 5px 0;    
+}
+
+/*##### the table stuff #####*/
+
+
+table td, table th {
+    border:1px solid #CCC;
+    font-size:0.9em;
+    padding:3px;
+}
+
+table.sar-table th {
+    background:none repeat scroll 0 0 #1c4a9d;
+    color:#fff;
+    font-size: normal;
+    font-weight:normal;
+    height:20px;
+    width:100px;
+    cursor:move;
+}
+
+#handlerTable th {
+    cursor:default;
+}
+
+.some-handle {
+    cursor:move;
+}
+
+#constrainTable th {
+    cursor:default;
+}
+
+#constrainTable th.accept {
+    cursor:move;
+}
+
+.some-handle {
+    background-image:url("../img/handle.png");
+    background-repeat:repeat-x;
+    height:18px;
+    margin:0 1px;
+}
+
+/*##### the dragtable stuff #####*/
+.dragtable-sortable { 
+    list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;
+}
+.dragtable-sortable li {
+    margin: 0; padding: 0; float: left; font-size: 1em; background: white; 
+}
+
+.dragtable-sortable th, .dragtable-sortable td{
+    border-left: 0px;
+}
+
+.dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {
+    border-left: 1px solid #CCC; 
+}
+
+.ui-sortable-helper {
+    opacity: 0.7;filter: alpha(opacity=70);
+}
+.table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+.table th, .table td {
+    border: 1px solid #ccc;
+}
+.table th, .table td {
+    padding: 0.5rem;
+}
+.ui-sortable-placeholder { 
+    -moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    -webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    box-shadow: 4px 5px 4px #C6C6C6 inset;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    visibility: visible !important;
+    background: #EFEFEF !important; 
+    visibility: visible !important;
+}
+.ui-sortable-placeholder * { 
+    opacity: 0.0; visibility: hidden; 
+}

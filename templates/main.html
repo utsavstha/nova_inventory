@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Inventory</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{% static '/css/style.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/dragtable.css'%}">
+
+</head>
+
+<body>
+    {% block content %}
+    {% endblock %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+
+    <script src="https://kit.fontawesome.com/19c42b976f.js" crossorigin="anonymous"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+    <script src="{% static '/js/jquery.dragtable.js'%}"></script>
+
+    <script>
+        $('#bar').click(function () {
+            $(this).toggleClass('open');
+            $('#page-content-wrapper ,#sidebar-wrapper').toggleClass('toggled');
+
+        });
+        function show_hide_column(col_no, do_show) {
+            var rows = document.getElementById('table-audit').rows;
+            for (var row = 0; row < rows.length; row++) {
+                var cols = rows[row].cells;
+                if (col_no >= 0 && col_no < cols.length) {
+                    cols[col_no].style.display = do_show ? '' : 'none';
+                }
+            }
+            $("#ck_" + col_no).find('input[type=checkbox]').prop('checked', do_show);
+
+
+            // $(".dropdown-menu li ck_" + col_no).prop('checked', true);
+            columnsVisibility[col_no] = do_show;
+            $("#columns_visibility").val(columnsVisibility.toString());
+
+        }
+    </script>
+
+    <script>
+        var columnsVisibility = [];
+        var swapHistory = {{ swap_history }};
+        $(document).ready(function () {
+            let col = $("#columns_visibility").val();
+            columnsVisibility = col.split(",").map(x => x == "true");
+            // $('#table-audit').dragtable({ maxMovingRows: 1 });
+            $('#table-audit').dragtable({
+                maxMovingRows: 1,
+                persistState: function (table) {
+                    swapHistory.push([table.startIndex - 1, table.endIndex - 1]);
+                    console.log(swapHistory)
+                    $('[name="swap_history"]').val(JSON.stringify(swapHistory));
+                },
+                restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
+            });
+
+        });
+        var options = [];
+
+        $('.dropdown-menu div').on('click', function (event) {
+            var $target = $(event.currentTarget),
+                val = $target.attr('data-value'),
+                $inp = $target.find('input'),
+                idx;
+            if (columnsVisibility[val]) {
+                show_hide_column(val, false);
+                columnsVisibility[val] = false;
+                setTimeout(function () { $inp.prop('checked', false) }, 0);
+
+            } else {
+                show_hide_column(val, true);
+                columnsVisibility[val] = true;
+                setTimeout(function () { $inp.prop('checked', true) }, 0);
+
+            }
+            return false;
+        });
+
+        $('#filter-select').on('change', function () {
+            $("#txt-flag").val(this.value);
+
+            postFilter()
+        });
+
+        $('#limit-select').on('change', function () {
+            $("#current_limit").val(this.value);
+
+            postFilter()
+        });
+
+        $("#filter-last-imported").submit(function (e) {
+            e.preventDefault();
+            // createCookie("lStart", $("#lStartDate").val());
+            // createCookie("lEnd", $("#lEndDate").val());
+            postFilter();
+
+        });
+
+        $("#previous-page").click(function (e) {
+            let next = parseInt($("#current_page").val()) - 1
+            if (next >= 0) {
+                $("#current_page").val(next)
+                postFilter();
+            }
+
+        });
+
+        $("#next-page").click(function (e) {
+            let next = parseInt($("#current_page").val()) + 1
+            $("#current_page").val(next)
+            postFilter();
+
+        });
+        $("#filter-last-imported-clear").submit(function (e) {
+            e.preventDefault();
+            $("#lStartDate").val("")
+            $("#lEndDate").val("")
+            postFilter();
+
+        });
+
+        $('#filter-first-imported').submit(function (e) {
+            e.preventDefault();
+            // createCookie("fStart", $("#fStartDate").val());
+            // createCookie("fEnd", $("#fEndDate").val());
+
+            postFilter();
+        });
+
+        $('#filter-first-imported-clear').submit(function (e) {
+            e.preventDefault();
+            $("#fStartDate").val("")
+            $("#fEndDate").val("")
+
+            postFilter();
+        });
+
+
+        $('#form-search').submit(function (e) {
+            e.preventDefault();
+            // createCookie("search", $("#txt-search").val());
+            postFilter();
+        });
+
+        $('#btn-export').click(function (e) {
+            $("#lStart").val($("#lStartDate").val());
+            $("#lEnd").val($("#lEndDate").val());
+            $("#fStart").val($("#fStartDate").val());
+            $("#fEnd").val($("#fEndDate").val());
+            $("#tsearch").val($("#txt-search").val());
+            $('#filter-form').attr('action', "http://127.0.0.1:8000/export/").submit();
+        });
+
+        function postFilter() {
+            $("#lStart").val($("#lStartDate").val());
+            $("#lEnd").val($("#lEndDate").val());
+            $("#fStart").val($("#fStartDate").val());
+            $("#fEnd").val($("#fEndDate").val());
+            $("#tsearch").val($("#txt-search").val());
+            $("#columns_visibility").val(columnsVisibility.toString().trim());
+            $('#filter-form').attr('action', "").submit();
+        }
+
+
+
+    </script>
+
+
+    <script>
+        function createCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+        function readCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+        function eraseCookie(name) {
+            document.cookie = name + '=; Max-Age=-99999999;';
+        }
+
+    </script>
+</body>
+
+</html>

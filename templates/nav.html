@@ -1,0 +1,48 @@
+<nav class="fixed-top align-top" id="sidebar-wrapper" role="navigation">
+    <div class="simplebar-content" style="padding: 0px;">
+        <a class="sidebar-brand" href="index.html">
+            <span class="align-middle">Nova Inventory</span>
+        </a>
+
+        <ul class="navbar-nav align-self-stretch">
+            <li class="sidebar-header">
+                Pages
+            </li>
+            <li class="">
+                <a href="{% url 'audit'%}" class="nav-link text-left {{activate_dashboard}}" role="button"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-home"></i> Audit
+                </a>
+            </li>
+
+            <li class="">
+                <a href="{% url 'inRecord'%}" class="nav-link text-left {{activate_brands}}" role="button">
+                    <i class="fas fa-shopping-bag"></i> IN
+                </a>
+            </li>
+
+            <li class="">
+                <a href="{% url 'outRecord'%}" class="nav-link text-left {{activate_category}}" role="button">
+                    <i class="fas fa-suitcase"></i> OUT
+                </a>
+            </li>
+
+            <li class="">
+                <a href="{% url 'sumRecord'%}" class="nav-link text-left {{activate_stores}}" role="button">
+                    <i class="fas fa-store"></i> SUM
+                </a>
+            </li>
+
+            <li class="">
+                <a href="{% url 'errorRecord'%}" class="nav-link text-left {{activate_vendors}}" role="button">
+                    <i class="fas fa-store-alt"></i> ERROR
+                </a>
+            </li>
+
+        </ul>
+
+
+    </div>
+
+
+</nav>

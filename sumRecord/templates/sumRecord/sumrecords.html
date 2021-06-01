@@ -1,0 +1,125 @@
+{% extends 'main.html' %}
+{% block content %}
+{% include 'nav.html' %}
+
+<div id="page-content-wrapper">
+    <div id="content">
+        <div class="container-fluid p-0 px-lg-0 px-md-0">
+            <!-- Topbar -->
+            {% include 'topbar.html' %}
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid px-lg-4">
+                <div class="row">
+                    <div class="col-md-12 mt-lg-4 mt-4 mb-4">
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-0 text-gray-800">Sum Records</h1>
+
+                    </div>
+
+                    <!-- column -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- title -->
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <form class="d-none d-sm-inline-block form-inline navbar-search" method="POST">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-light "
+                                                    placeholder="Search by HAWB" aria-label="Search" name="search"
+                                                    value="{{search_data}}">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="submit">
+                                                        <i class="fas fa-search fa-sm"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- title -->
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table v-middle">
+                                    <thead>
+                                        <tr class="bg-light">
+                                            <th class="border-top-0">HAWB</th>
+                                            <th class="border-top-0">PIECE COUNT</th>
+                                            <th class="border-top-0">LAST SCANNED</th>
+                                            <th class="border-top-0">LOCATION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in records %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.1}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.2}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.3}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="">
+                                                        <h4 class="m-b-0 font-16">{{record.4}}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row text-muted">
+                    <div class="col-6 text-left">
+                        <p class="mb-0">
+                            <a href="index.html" class="text-muted"><strong>Inventory Management
+                                </strong></a> &copy
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+</div>
+{% endblock %}
