@@ -32,10 +32,11 @@ def audit(request):
         flag = flag if flag != None else 0
         swapHistory = json.loads(swapHistory) if swapHistory != None and len(
             swapHistory) > 0 else []
+
         records = audit.all(page=page, limit=limit, keyword=searchKeyword, last_imported_start=lStart,
                             last_imported_end=lEnd, first_imported_start=fStart, first_imported_end=fEnd)
 
-        context = {"columns": columns, "swap_history": json.dumps(swapHistory), "columns_visibility": visibility, "txt-flag": flag, "current_page": page, "current_limit": limit, "search_data": searchKeyword,
+        context = {"columns": columns, "swap_history": json.dumps([[0, 0]]), "columns_visibility": visibility, "txt-flag": flag, "current_page": page, "current_limit": limit, "search_data": searchKeyword,
                    "lStart": lStart, "lEnd": lEnd, "fStart": fStart, "fEnd": fEnd, "flag": flag, 'records': filterFlags(flag, records)}
 
         return render(request, 'audit/audit.html', context)
@@ -104,6 +105,7 @@ def swapEntries(inputEntry, swapHistory):
     entry = inputEntry
     for swaps in swapHistory:
         entry[swaps[0]], entry[swaps[1]] = entry[swaps[1]], entry[swaps[0]]
+        print(swaps)
 
     return entry
 

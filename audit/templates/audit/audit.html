@@ -8,7 +8,7 @@
             <!-- Topbar -->
             {% include 'topbar.html' %}
             <!-- End of Topbar -->
-            <form id="filter-form" action="" method="POST">
+            <form id="filter-form" action="" method="POST" hidden>
                 {% csrf_token %}
                 <input type="text" id="tsearch" name="tsearch" value="{{search_data}}">
                 <input type="text" id="lStart" name="lStart" value="{{lStart}}">
@@ -202,61 +202,13 @@
                                 <table class="defaultTable sar-table" id="table-audit">
                                     <thead>
                                         <tr class="bg-light">
-
+                                            {% for column in columns %}
                                             <th class="border-top-0">
-                                                HAWB<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(0,false)" />
+                                                {{column}}<br><input type="checkbox" checked
+                                                    onclick="show_hide_column({{ forloop.counter0 }},false)" />
                                             </th>
-                                            <th class="border-top-0">D<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(1,false)" /></th>
-                                            <th class="border-top-0">O<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(2,false)" /></th>
-                                            <th class="border-top-0">S<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(3,false)" /></th>
-                                            <th class="border-top-0">V<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(4,false)" /></th>
-                                            <th class="border-top-0">R<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(5,false)" /></th>
-                                            <th class="border-top-0">C<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(6,false)" /></th>
-                                            <th class="border-top-0">LAST IMPORTED<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(7,false)" />
-                                            </th>
-                                            <th class="border-top-0">FIRST IMPORTED<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(8,false)" />
-                                            </th>
-                                            <th class="border-top-0">FS DEVAN<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(9,false)" />
-                                            </th>
-                                            <th class="border-top-0">OF LOCATION<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(10,false)" />
-                                            </th>
-                                            <th class="border-top-0">OF DEVAN<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(11,false)" />
-                                            </th>
-                                            <th class="border-top-0">OF PIECE COUNT<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(12,false)" />
-                                            </th>
-                                            <th class="border-top-0">PIECE COUNT<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(13,false)" />
-                                            </th>
-                                            <th class="border-top-0">FS LOCATION<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(14,false)" />
-                                            </th>
-                                            <th class="border-top-0">FS PIECE COUNT<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(15,false)" />
-                                            </th>
-                                            <th class="border-top-0">FS PRIMARY LOCATION<br><input type="checkbox"
-                                                    checked onclick="show_hide_column(16,false)" /></th>
-                                            <th class="border-top-0">CLIENT NAME<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(17,false)" />
-                                            </th>
-                                            <th class="border-top-0">RELEASE DATE<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(18,false)" />
-                                            </th>
-                                            <th class="border-top-0">CONSIGNEE<br><input type="checkbox" checked
-                                                    onclick="show_hide_column(19,false)" />
-                                            </th>
+                                            {% endfor %}
+
                                         </tr>
                                     </thead>
                                     <tbody>
