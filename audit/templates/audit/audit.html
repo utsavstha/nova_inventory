@@ -25,6 +25,7 @@
 
             </form>
             <!-- Begin Page Content -->
+
             <div class="container-fluid px-lg-4">
                 <div class="row">
                     <!-- column -->
@@ -48,8 +49,8 @@
                                                 </div>
                                             </div>
                                         </form>
-                                        <a href="{% url 'export' %}"
-                                            class="d-none d-sm-inline-block btn btn-md btn-primary shadow-sm ">
+                                        <a href="" class="d-none d-sm-inline-block btn btn-md btn-primary shadow-sm "
+                                            data-toggle="modal" data-target="#importModal">
                                             <i class="fas fa-upload mr-2"></i>IMPORT</a>
                                         <a id="btn-export"
                                             class="d-none d-sm-inline-block btn btn-md btn-primary shadow-sm ">
@@ -412,23 +413,103 @@
 
         </div>
 
-
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row text-muted">
-                    <div class="col-6 text-left">
-                        <p class="mb-0">
-                            <a href="index.html" class="text-muted"><strong>Inventory Management
-                                </strong></a> &copy
-                        </p>
+        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importLongTitle">Upload Files</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
+                    <div class="modal-body">
+                        <div id="dropzone">
+                            <form id="dropZoneForm" class="dropzone needsclick dz-clickable" action="#" method="post"
+                                enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="abc" value="i am hidden value">
+                                <div class="fallback">
+                                    <input name="file" type="file" multiple />
+                                </div>
+                            </form>
+                            <input type="submit" id="submit-all" value="Upload" class="btn btn-primary mt-3"
+                                style="float: right">
 
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-        </footer>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-muted">
+                        <div class="col-6 text-left">
+                            <p class="mb-0">
+                                <a href="index.html" class="text-muted"><strong>Inventory Management
+                                    </strong></a> &copy
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+
+        </div>
 
     </div>
+    <script type="text/javascript">
+        final_url = "http://127.0.0.1:8000/import/";
+        Dropzone.options.dropZoneForm = {
+            url: final_url,
+            addRemoveLinks: true,
+            method: "POST",
+            params: 'file_upload',
+            maxFilesize: 256 * 4 * 2,
+            dictFileTooBig: "File is too big.",
+            autoProcessQueue: false,
+            acceptedFiles: '.csv',
+            uploadMultiple: true,
+            dictDefaultMessage: "Drag and Drop files here to upload",
+            parallelUploads: 10,
+            maxFiles: 12,
+            clickable: true,
+            headers: {
+                'Access-Control-Request-Headers': 'authorization,cache-control,x-requested-with',
+                'Access-Control-Allow-Origin': '*'
+                // remove Cache-Control and X-Requested-With
+                // to be sent along with the request
+            },
+            init: function () {
+                mydropzone = this;
 
-</div>
+                $("#submit-all").click(function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    var paymentNotes = $("#paymentNotes").val();
+                    mydropzone.autoProcessQueue = true;
+                    mydropzone.processQueue();
 
-{% endblock %}
+                });
+                mydropzone.on('sending', function (file, xhr, formData) {
+
+                    var notes = $("#paymentNotes").val();
+                    var outgoingManualPaymentID = $("#outgoingManualPaymentID").val();
+                    console.log('notes from sending' + notes);
+                    console.log('notes from sending' + notes);
+                    formData.append('paymentNotes', notes);
+                    formData.append('outgoingManualPaymentID', outgoingManualPaymentID);
+                });
+            },
+            success: function f(response) {
+                console.log('response' + response);
+                $('.dz-remove').hide();
+            },
+        };
+
+    </script>
+
+    {% endblock %}

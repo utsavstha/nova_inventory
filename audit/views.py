@@ -5,6 +5,7 @@ from django.http import HttpResponse
 import datetime
 import numpy as np
 import json
+from django.core.files.storage import FileSystemStorage
 
 
 def audit(request):
@@ -183,3 +184,19 @@ def filterFlags(flag, records):
         return filtered
     else:
         return records
+
+
+def importFile(request):
+    if request.method == 'POST':
+        files = [request.FILES.get('file[%d]' % i)
+                 for i in range(0, len(request.FILES))]
+        # inputs obtained from form are grabbed here, similarly other data can be gathered
+        abc = request.POST['abc']
+        # location where you want to upload your files
+        folder = 'my_folder'
+        fs = FileSystemStorage(location=folder)
+        for f in files:
+            filename = fs.save(f.name, f)
+    data = {'status': 'success'}
+    response = json.dumps(data)
+    return HttpResponse(response)
